@@ -1,0 +1,36 @@
+; LDR 	-> LoaD Region
+; EXR 	-> EXecution Region
+; RO 	-> Read Only
+; RW 	-> Read Write
+; ZI	-> Zero Initialized
+
+; ************************************************************************
+; BASIC STRUCTURE OF SCATER FILE
+; ************************************************************************
+; Load_Region_Label Start_Address Size
+; {
+;	Execution_Region_label Start_Address Size
+;	{
+;		.ANY (+RO,+RW,+ZI)
+;	}
+; }
+; ************************************************************************
+
+LDR_ROM 0x08000000 0x080FFFFF
+{
+	EXR_ROM 0x08000000 0x080FFFFF
+	{
+		*.o (RESET,+FIRST) ; Loading first RESET Section
+		*(InRoot$$Sections) ;Conveying this is root section
+		.ANY (+RO) ; Conveying to linker Load any sections which has Read only permissions  
+	}
+}
+
+; Using SRAM1
+LDR_RAM 0x20000000 0x2001BFFF
+{
+	EXR_RAM 0x20000000 0x2001BFFF
+	{
+		.ANY (+RW,+ZI)
+	}
+}
